@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle Cliente - JJ Coach Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👤 Detalles del Cliente</h1>
+            <p>Información completa de {{ client['name'] }}</p>
+        </div>
+        
+        <nav class="nav">
+            <a href="/trainer_dashboard">🏠 Panel Principal</a>
+            <a href="/my_clients">👥 Mis Clientes</a>
+            <a href="/schedule">📅 Mi Horario</a>
+            <a href="/services">🏋️‍♂️ Servicios</a>
+            <a href="/earnings">💰 Ganancias</a>
+            <a href="/logout">🚪 Cerrar Sesión</a>
+        </nav>
+        
+        <div class="dashboard-grid">
+            <div class="card">
+                <h2>📋 Información Personal</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>Nombre:</strong> {{ client['name'] }}
+                    </div>
+                    <div class="info-item">
+                        <strong>Email:</strong> {{ client['email'] }}
+                    </div>
+                    <div class="info-item">
+                        <strong>Cliente desde:</strong> {{ client['created_at'].strftime('%d/%m/%Y') }}
+                    </div>
+                    <div class="info-item">
+                        <strong>Estado:</strong> 
+                        <span class="status-active">Activo</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>📊 Estadísticas del Cliente</h2>
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <h3>{{ total_sessions }}</h3>
+                        <p>Total Sesiones</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>{{ month_sessions }}</h3>
+                        <p>Sesiones este mes</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>{{ completed_sessions }}</h3>
+                        <p>Sesiones Completadas</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>📅 Historial de Sesiones</h2>
+            {% if sessions %}
+                <div class="sessions-list">
+                    {% for session in sessions %}
+                        <div class="session-item">
+                            <div class="session-info">
+                                <strong>{{ session['reservation_date'].strftime('%d/%m/%Y') }}</strong>
+                                <p>{{ session['start_time'] }} - {{ session['end_time'] }}</p>
+                                <span class="status-{{ session['status'] }}">{{ session['status'] }}</span>
+                            </div>
+                            <div class="session-price">
+                                <strong>€{{ session['total_price'] }}</strong>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>📭 Sin sesiones registradas</h3>
+                    <p>Este cliente aún no tiene sesiones agendadas.</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="card">
+            <h2>⚡ Acciones Rápidas</h2>
+            <div class="action-buttons">
+                <a href="/schedule_session/{{ client['id'] }}" class="btn btn-primary">📅 Agendar Sesión</a>
+                <a href="/client_progress/{{ client['id'] }}" class="btn btn-secondary">📊 Ver Progreso</a>
+                <a href="/send_message/{{ client['id'] }}" class="btn btn-secondary">💬 Enviar Mensaje</a>
+            </div>
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <a href="/my_clients" class="btn btn-secondary">← Volver a Clientes</a>
+        </div>
+    </div>
+</body>
+</html>

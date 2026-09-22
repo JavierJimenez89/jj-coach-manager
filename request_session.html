@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitar Sesión - JJ Coach Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📅 Solicitar Nueva Sesión</h1>
+            <p>Agenda tu próxima sesión de entrenamiento</p>
+        </div>
+        
+        <nav class="nav">
+            <a href="/client_dashboard">🏠 Panel Principal</a>
+            <a href="/reservations">📅 Mis Reservas</a>
+            <a href="/profile">👤 Mi Perfil</a>
+            <a href="/progress">📊 Mi Progreso</a>
+            <a href="/logout">🚪 Cerrar Sesión</a>
+        </nav>
+        
+        <div class="card">
+            <h2>🏋️‍♂️ Detalles de la Sesión</h2>
+            <form method="POST" action="/request_session" class="booking-form">
+                <div class="form-group">
+                    <label>📅 Fecha Deseada</label>
+                    <input type="date" name="date" required min="{{ today or '' }}">
+                </div>
+                
+                <div class="form-group">
+                    <label>⏰ Hora Preferida</label>
+                    <select name="time" required>
+                        <option value="">Selecciona una hora...</option>
+                        <option value="08:00">08:00 AM</option>
+                        <option value="09:00">09:00 AM</option>
+                        <option value="10:00">10:00 AM</option>
+                        <option value="11:00">11:00 AM</option>
+                        <option value="12:00">12:00 PM</option>
+                        <option value="17:00">05:00 PM</option>
+                        <option value="18:00">06:00 PM</option>
+                        <option value="19:00">07:00 PM</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>🏋️‍♂️ Tipo de Entrenamiento</label>
+                    <select name="service" required>
+                        <option value="">Selecciona un servicio...</option>
+                        {% for service in services %}
+                        <option value="{{ service.id }}">{{ service.name }} - €{{ service.price }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">📅 Solicitar Sesión</button>
+                    <button type="button" class="btn-secondary" onclick="addToCart()">🛒 Añadir al Carrito</button>
+                </div>
+                
+                <div class="form-group">
+                    <label>📝 Notas Adicionales</label>
+                    <textarea name="notes" placeholder="¿Algún objetivo específico para esta sesión? ¿Alguna lesión o condición que debamos conocer?"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>🎯 Objetivos de la Sesión</label>
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" name="goals" value="fuerza">
+                            💪 Mejorar fuerza
+                        </label>
+                        <label>
+                            <input type="checkbox" name="goals" value="cardio">
+                            🏃 Cardio y resistencia
+                        </label>
+                        <label>
+                            <input type="checkbox" name="goals" value="flexibilidad">
+                            🧘 Flexibilidad y movilidad
+                        </label>
+                        <label>
+                            <input type="checkbox" name="goals" value="tecnica">
+                            🎯 Mejorar técnica
+                        </label>
+                        <label>
+                            <input type="checkbox" name="goals" value="peso">
+                            ⚖️ Control de peso
+                        </label>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-primary">📅 Enviar Solicitud</button>
+            </form>
+        </div>
+        
+        <div class="card">
+            <h2>📋 Información Importante</h2>
+            <div class="info-section">
+                <h3>⏰ Política de Cancelación</h3>
+                <ul>
+                    <li>Cancelaciones con más de 24 horas: Sin costo</li>
+                    <li>Cancelaciones con menos de 24 horas: 50% del costo</li>
+                    <li>No presentación: 100% del costo</li>
+                </ul>
+                
+                <h3>👕 Qué Traer</h3>
+                <ul>
+                    <li>Ropa cómoda para entrenar</li>
+                    <li>Zapatillas deportivas</li>
+                    <li>Botella de agua</li>
+                    <li>Toalla (opcional)</li>
+                </ul>
+                
+                <h3>📞 Contacto del Entrenador</h3>
+                <p>Si tienes alguna pregunta sobre tu solicitud, contacta a:</p>
+                <p><strong>📧 trainer@jjcoach.com</strong> | <strong>📱 +34 600 000 000</strong></p>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        .booking-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .info-section h3 {
+            color: #2c3e50;
+            margin: 20px 0 10px 0;
+        }
+        
+        .info-section ul {
+            margin: 10px 0 20px 20px;
+        }
+        
+        .info-section li {
+            margin: 8px 0;
+            color: #555;
+        }
+        
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .checkbox-group label:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+        
+        .cart-link {
+            background: #28a745 !important;
+            color: white !important;
+            font-weight: bold;
+        }
+        
+        .cart-link:hover {
+            background: #218838 !important;
+        }
+    </style>
+    
+    <script>
+        function addToCart() {
+            const serviceSelect = document.querySelector('select[name="service"]');
+            const selectedOption = serviceSelect.options[serviceSelect.selectedIndex];
+            
+            if (!serviceSelect.value) {
+                alert('Por favor, selecciona un servicio primero');
+                return;
+            }
+            
+            // Crear formulario para añadir al carrito
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/add_to_cart';
+            
+            // Añadir campos del formulario
+            const fields = [
+                {name: 'item_id', value: serviceSelect.value},
+                {name: 'item_type', value: 'service'},
+                {name: 'name', value: selectedOption.text.split(' - €')[0]},
+                {name: 'price', value: selectedOption.text.split(' - €')[1]},
+                {name: 'quantity', value: '1'}
+            ];
+            
+            fields.forEach(field => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = field.name;
+                input.value = field.value;
+                form.appendChild(input);
+            });
+            
+            document.body.appendChild(form);
+            form.submit();
+        }
+        
+        // Actualizar contador del carrito
+        function updateCartCount() {
+            fetch('/cart/count')
+                .then(response => response.json())
+                .then(data => {
+                    const cartCount = document.getElementById('cart-count');
+                    if (cartCount) {
+                        cartCount.textContent = data.count;
+                    }
+                })
+                .catch(error => console.error('Error updating cart count:', error));
+        }
+        
+        // Actualizar al cargar la página
+        document.addEventListener('DOMContentLoaded', updateCartCount);
+    </script>
+</body>
+</html>

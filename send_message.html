@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enviar Mensaje - JJ Coach Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💬 Enviar Mensaje</h1>
+            <p>Contactar a {{ client['name'] }}</p>
+        </div>
+        
+        <nav class="nav">
+            <a href="/trainer_dashboard">🏠 Panel Principal</a>
+            <a href="/my_clients">👥 Mis Clientes</a>
+            <a href="/schedule">📅 Mi Horario</a>
+            <a href="/services">🏋️‍♂️ Servicios</a>
+            <a href="/earnings">💰 Ganancias</a>
+            <a href="/logout">🚪 Cerrar Sesión</a>
+        </nav>
+        
+        <div class="form-container">
+            <div class="card">
+                <h2>📨 Nuevo Mensaje</h2>
+                
+                {% if success %}
+                    <div class="alert alert-success">{{ success }}</div>
+                {% endif %}
+                
+                <form method="POST">
+                    <div class="form-group">
+                        <label>Para</label>
+                        <input type="text" class="form-control" value="{{ client['name'] }} ({{ client['email'] }})" readonly>
+                        <input type="hidden" name="client_id" value="{{ client['id'] }}">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subject">📋 Asunto</label>
+                        <input type="text" id="subject" name="subject" class="form-control" placeholder="Asunto del mensaje..." required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">💬 Mensaje</label>
+                        <textarea id="message" name="message" class="form-control" rows="6" placeholder="Escribe tu mensaje aquí..." required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>🚀 Plantillas Rápidas</label>
+                        <div class="template-buttons">
+                            <button type="button" class="btn-template" onclick="setTemplate('recordatorio')">📅 Recordatorio de Sesión</button>
+                            <button type="button" class="btn-template" onclick="setTemplate('motivacion')">💪 Mensaje Motivacional</button>
+                            <button type="button" class="btn-template" onclick="setTemplate('progreso')">📊 Seguimiento de Progreso</button>
+                            <button type="button" class="btn-template" onclick="setTemplate('nutricion')">🥗 Consejos Nutricionales</button>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">📤 Enviar Mensaje</button>
+                </form>
+                
+                <div style="margin-top: 20px;">
+                    <a href="/client_detail/{{ client['id'] }}" class="btn btn-secondary">← Volver al Cliente</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>📨 Historial de Mensajes</h2>
+            {% if messages %}
+                <div class="messages-list">
+                    {% for msg in messages %}
+                        <div class="message-item {{ msg['direction'] }}">
+                            <div class="message-header">
+                                <strong>{{ msg['subject'] }}</strong>
+                                <span class="message-date">{{ msg['sent_at'].strftime('%d/%m/%Y %H:%M') }}</span>
+                            </div>
+                            <div class="message-content">
+                                {{ msg['message']|nl2br }}
+                            </div>
+                            <div class="message-status">
+                                {% if msg['direction'] == 'sent' %}
+                                    ✅ Enviado
+                                {% else %}
+                                    📥 Recibido
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>📭 Sin mensajes previos</h3>
+                    <p>Este es el primer mensaje con este cliente.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <script>
+        function setTemplate(type) {
+            const subject = document.getElementById('subject');
+            const message = document.getElementById('message');
+            
+            const templates = {
+                recordatorio: {
+                    subject: 'Recordatorio de Próxima Sesión',
+                    message: 'Hola {{ name }},\n\nTe escribo para recordarte tu próxima sesión de entrenamiento mañana a las [hora].\n\nRecuerda traer:\n- Ropa cómoda\n- Toalla\n- Botella de agua\n\n¡Nos vemos pronto!\n\nSaludos,\nTu Entrenador'
+                },
+                motivacion: {
+                    subject: '¡Sigue así!',
+                    message: 'Hola {{ name }},\n\nQuería felicitarte por tu gran progreso esta semana. He notado tu dedicación y esfuerzo en cada sesión.\n\nSigue así, estás haciendo un excelente trabajo. ¡Los resultados se están notando!\n\n¡Sigue adelante!\n\nSaludos,\nTu Entrenador'
+                },
+                progreso: {
+                    subject: 'Seguimiento de tu Progreso',
+                    message: 'Hola {{ name }},\n\nHe revisado tu progreso este mes y los resultados son excelentes:\n\n- Has completado X sesiones\n- Tu resistencia ha mejorado un X%\n- Tu fuerza ha aumentado X kg\n\n¡Sigue con este ritmo! Estoy muy orgulloso de tu compromiso.\n\n¿Hay alguna meta específica que te gustaría trabajar este próximo mes?\n\nSaludos,\nTu Entrenador'
+                },
+                nutricion: {
+                    subject: 'Consejos Nutricionales',
+                    message: 'Hola {{ name }},\n\nQuería compartir algunos consejos nutricionales para complementar tu entrenamiento:\n\n1. Hidratación: Bebe al menos 2L de agua al día\n2. Proteínas: Incluye proteína en cada comida\n3. Vegetales: La mitad de tu plato deberían ser vegetales\n4. Horarios: Intenta comer cada 3-4 horas\n\n¿Te gustaría que preparemos un plan nutricional más detallado?\n\nSaludos,\nTu Entrenador'
+                }
+            };
+            
+            const template = templates[type];
+            subject.value = template.subject.replace('{{ name }}', '{{ client["name"] }}');
+            message.value = template.message.replace('{{ name }}', '{{ client["name"] }}');
+        }
+    </script>
+</body>
+</html>

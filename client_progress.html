@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progreso del Cliente - JJ Coach Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Progreso de {{ client['name'] }}</h1>
+            <p>Seguimiento del avance del cliente</p>
+        </div>
+        
+        <nav class="nav">
+            <a href="/trainer_dashboard">🏠 Panel Principal</a>
+            <a href="/my_clients">👥 Mis Clientes</a>
+            <a href="/schedule">📅 Mi Horario</a>
+            <a href="/services">🏋️‍♂️ Servicios</a>
+            <a href="/earnings">💰 Ganancias</a>
+            <a href="/logout">🚪 Cerrar Sesión</a>
+        </nav>
+        
+        <div class="dashboard-grid">
+            <div class="stat-card">
+                <h3>{{ total_sessions }}</h3>
+                <p>Total Sesiones</p>
+            </div>
+            
+            <div class="stat-card">
+                <h3>{{ completed_sessions }}</h3>
+                <p>Sesiones Completadas</p>
+            </div>
+            
+            <div class="stat-card">
+                <h3>{{ completion_rate }}%</h3>
+                <p>Tasa de Completación</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>📈 Progreso Mensual</h2>
+            <div class="progress-chart">
+                {% for month_data in monthly_progress %}
+                    <div class="month-bar">
+                        <div class="month-label">{{ month_data['month'] }}</div>
+                        <div class="bar-container">
+                            <div class="bar" style="width: {{ month_data['percentage'] }}%;"></div>
+                        </div>
+                        <div class="month-count">{{ month_data['sessions'] }} sesiones</div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>🎯 Objetivos y Metas</h2>
+            <div class="goals-section">
+                <div class="goal-item">
+                    <h4>🏃‍♂️ Resistencia Cardiovascular</h4>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 75%;"></div>
+                    </div>
+                    <p>75% completado</p>
+                </div>
+                
+                <div class="goal-item">
+                    <h4>💪 Fuerza Muscular</h4>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 60%;"></div>
+                    </div>
+                    <p>60% completado</p>
+                </div>
+                
+                <div class="goal-item">
+                    <h4>⚖️ Control de Peso</h4>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 85%;"></div>
+                    </div>
+                    <p>85% completado</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>📝 Notas de Progreso</h2>
+            <div class="notes-timeline">
+                {% if progress_notes %}
+                    {% for note in progress_notes %}
+                        <div class="note-item">
+                            <div class="note-date">{{ note['created_at'].strftime('%d/%m/%Y') }}</div>
+                            <div class="note-content">
+                                {{ note['note']|nl2br }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <h3>📝 Sin notas aún</h3>
+                        <p>Agrega tu primera nota de progreso para este cliente.</p>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="add-note">
+                <h3>Agregar Nueva Nota</h3>
+                {% if success %}
+                    <div class="alert alert-success">{{ success }}</div>
+                {% endif %}
+                <form method="POST">
+                    <div class="form-group">
+                        <textarea name="note" class="form-control" rows="3" placeholder="Escribe una nota sobre el progreso del cliente..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Agregar Nota</button>
+                </form>
+            </div>
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <a href="/client_detail/{{ client['id'] }}" class="btn btn-secondary">← Volver al Cliente</a>
+        </div>
+    </div>
+</body>
+</html>

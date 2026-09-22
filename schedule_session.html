@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendar Sesión - JJ Coach Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📅 Agendar Sesión</h1>
+            <p>Nueva sesión de entrenamiento</p>
+        </div>
+        
+        <nav class="nav">
+            <a href="/trainer_dashboard">🏠 Panel Principal</a>
+            <a href="/my_clients">👥 Mis Clientes</a>
+            <a href="/schedule">📅 Mi Horario</a>
+            <a href="/services">🏋️‍♂️ Servicios</a>
+            <a href="/earnings">💰 Ganancias</a>
+            <a href="/logout">🚪 Cerrar Sesión</a>
+        </nav>
+        
+        <div class="form-container">
+            <div class="card">
+                <h2>📋 Detalles de la Sesión</h2>
+                
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                
+                <form method="POST" action="/create_session">
+                    <div class="form-group">
+                        <label for="client_id">👥 Cliente</label>
+                        <select id="client_id" name="client_id" class="form-control" required>
+                            <option value="">Selecciona un cliente</option>
+                            {% for client in clients %}
+                                <option value="{{ client['id'] }}" 
+                                        {% if selected_client_id and client['id'] == selected_client_id %}selected{% endif %}>
+                                    {{ client['name'] }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="service_id">🏋️‍♂️ Tipo de Servicio</label>
+                        <select id="service_id" name="service_id" class="form-control" required>
+                            <option value="">Selecciona un servicio</option>
+                            {% for service in services %}
+                                <option value="{{ service['id'] }}">
+                                    {{ service['name'] }} - €{{ service['price'] }} ({{ service['duration_minutes'] }} min)
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reservation_date">📅 Fecha</label>
+                        <input type="date" id="reservation_date" name="reservation_date" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="start_time">🕐 Hora Inicio</label>
+                        <input type="time" id="start_time" name="start_time" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="notes">📝 Notas (opcional)</label>
+                        <textarea id="notes" name="notes" class="form-control" rows="3" placeholder="Notas sobre la sesión..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">📅 Agendar Sesión</button>
+                </form>
+                
+                <div style="margin-top: 20px;">
+                    <a href="/schedule" class="btn btn-secondary">← Volver al Horario</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

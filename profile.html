@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - JJ Coach Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👤 Mi Perfil</h1>
+            <p>Gestiona tu información personal</p>
+        </div>
+        
+        <nav class="nav">
+            <a href="/client_dashboard">🏠 Panel Principal</a>
+            <a href="/schedule">📅 Mi Horario</a>
+            <a href="/reservations">📋 Mis Reservas</a>
+            <a href="/profile">👤 Mi Perfil</a>
+            <a href="/progress">📊 Mi Progreso</a>
+            <a href="/logout">🚪 Cerrar Sesión</a>
+        </nav>
+        
+        <!-- Configuración de Cuenta -->
+        <div class="dashboard-grid">
+            <div class="card">
+                <h2>⚙️ Configuración de Cuenta</h2>
+                <div class="profile-section">
+                    <h3>✏️ Editar Perfil</h3>
+                    <form method="POST" action="/update_profile">
+                        <div class="form-group">
+                            <label>Nombre Completo</label>
+                            <input type="text" name="name" value="{{ user.name }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" name="email" value="{{ user.email }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Teléfono</label>
+                            <input type="tel" name="phone" value="{{ user.phone or '' }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha de Nacimiento</label>
+                            <input type="date" name="birth_date" value="{{ user.birth_date or '' }}">
+                        </div>
+                        <button type="submit" class="btn-primary">💾 Guardar Cambios</button>
+                    </form>
+                </div>
+                
+                <div class="profile-section">
+                    <h3>🔒 Cambiar Contraseña</h3>
+                    <form method="POST" action="/change_password">
+                        <div class="form-group">
+                            <label>Contraseña Actual</label>
+                            <input type="password" name="current_password" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Nueva Contraseña</label>
+                            <input type="password" name="new_password" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Confirmar Nueva Contraseña</label>
+                            <input type="password" name="confirm_password" required>
+                        </div>
+                        <button type="submit" class="btn-primary">🔒 Cambiar Contraseña</button>
+                    </form>
+                </div>
+                
+                <div class="profile-section">
+                    <h3>📧 Configurar Notificaciones</h3>
+                    <form method="POST" action="/update_notifications">
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" name="email_notifications" {% if user.email_notifications %}checked{% endif %}>
+                                Recibir notificaciones por email
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" name="sms_notifications" {% if user.sms_notifications %}checked{% endif %}>
+                                Recibir notificaciones por SMS
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" name="session_reminders" {% if user.session_reminders %}checked{% endif %}>
+                                Recordatorios de sesiones
+                            </label>
+                        </div>
+                        <button type="submit" class="btn-primary">💾 Guardar Preferencias</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Preferencias de Entrenamiento -->
+            <div class="card">
+                <h2>🏋️‍♂️ Preferencias de Entrenamiento</h2>
+                <div class="profile-section">
+                    <h3>🎯 Establecer Objetivos</h3>
+                    <form method="POST" action="/update_goals">
+                        <div class="form-group">
+                            <label>Objetivo Principal</label>
+                            <select name="primary_goal">
+                                <option value="weight_loss">Pérdida de Peso</option>
+                                <option value="muscle_gain">Ganancia Muscular</option>
+                                <option value="endurance">Mejorar Resistencia</option>
+                                <option value="flexibility">Mejorar Flexibilidad</option>
+                                <option value="general">Mantenimiento General</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Peso Objetivo (kg)</label>
+                            <input type="number" name="target_weight" step="0.1" value="{{ user.target_weight or '' }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha Objetivo</label>
+                            <input type="date" name="target_date" value="{{ user.target_date or '' }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Notas Adicionales</label>
+                            <textarea name="goal_notes" rows="3">{{ user.goal_notes or '' }}</textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">🎯 Guardar Objetivos</button>
+                    </form>
+                </div>
+                
+                <div class="profile-section">
+                    <h3>⚙️ Configurar Disponibilidad</h3>
+                    <form method="POST" action="/update_availability">
+                        <div class="form-group">
+                            <label>Días Disponibles</label>
+                            <div class="checkbox-group">
+                                <label><input type="checkbox" name="available_days" value="monday"> Lunes</label>
+                                <label><input type="checkbox" name="available_days" value="tuesday"> Martes</label>
+                                <label><input type="checkbox" name="available_days" value="wednesday"> Miércoles</label>
+                                <label><input type="checkbox" name="available_days" value="thursday"> Jueves</label>
+                                <label><input type="checkbox" name="available_days" value="friday"> Viernes</label>
+                                <label><input type="checkbox" name="available_days" value="saturday"> Sábado</label>
+                                <label><input type="checkbox" name="available_days" value="sunday"> Domingo</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Hora Preferida (inicio)</label>
+                            <input type="time" name="preferred_time_start" value="{{ user.preferred_time_start or '09:00' }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Hora Preferida (fin)</label>
+                            <input type="time" name="preferred_time_end" value="{{ user.preferred_time_end or '18:00' }}">
+                        </div>
+                        <button type="submit" class="btn-primary">⏰ Guardar Disponibilidad</button>
+                    </form>
+                </div>
+                
+                <div class="profile-section">
+                    <h3>📋 Historial Médico</h3>
+                    <form method="POST" action="/update_medical_history">
+                        <div class="form-group">
+                            <label>Condiciones Médicas</label>
+                            <textarea name="medical_conditions" rows="3" placeholder="Ej: Asma, hipertensión, lesiones anteriores...">{{ user.medical_conditions or '' }}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Medicamentos Actuales</label>
+                            <textarea name="medications" rows="2" placeholder="Lista de medicamentos que tomas actualmente...">{{ user.medications or '' }}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Alergias</label>
+                            <textarea name="allergies" rows="2" placeholder="Ej: Látex, maní, mariscos...">{{ user.allergies or '' }}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Restricciones de Ejercicio</label>
+                            <textarea name="exercise_restrictions" rows="2" placeholder="Limitaciones físicas o restricciones médicas...">{{ user.exercise_restrictions or '' }}</textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">📋 Guardar Historial Médico</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>

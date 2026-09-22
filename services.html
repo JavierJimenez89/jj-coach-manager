@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servicios - JJ Coach Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏋️‍♂️ Mis Servicios</h1>
+            <p>Gestiona tus servicios de entrenamiento</p>
+        </div>
+        
+        <nav class="nav">
+            <a href="/">🏠 Inicio</a>
+            <a href="/trainer_dashboard">🎯 Panel</a>
+            <a href="/my_clients">👥 Clientes</a>
+            <a href="/schedule">📅 Horario</a>
+            <a href="/services">🏋️‍♂️ Servicios</a>
+            <a href="/earnings">💰 Ganancias</a>
+            <a href="/logout">🚪 Cerrar Sesión</a>
+        </nav>
+        
+        <div class="card">
+            <h2>Lista de Servicios</h2>
+            {% if services %}
+                <div class="services-grid">
+                    {% for service in services %}
+                    <div class="service-card">
+                        <h3>{{ service.name }}</h3>
+                        <p>{{ service.description or 'Sin descripción' }}</p>
+                        <div class="service-price">
+                            <strong>€{{ service.price }}</strong>
+                        </div>
+                        <div class="service-duration">
+                            <strong>{{ service.duration or '60' }} minutos</strong>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>📋 No tienes servicios configurados</h3>
+                    <p>Comienza agregando tus primeros servicios de entrenamiento</p>
+                    <a href="/add_service" class="btn btn-primary" style="text-decoration: none; display: inline-block;">➕ Agregar Servicio</a>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="card">
+            <h2>Acciones</h2>
+            <div class="action-buttons">
+                <a href="/add_service" class="btn btn-primary" style="text-decoration: none; display: inline-block;">➕ Agregar Nuevo Servicio</a>
+                <a href="/earnings" class="btn btn-secondary" style="text-decoration: none; display: inline-block;">📊 Ver Estadísticas</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

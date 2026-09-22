@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagar Reserva - JJ Coach Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💳 Pagar Reserva</h1>
+            <p>Completa el pago para confirmar tu sesión</p>
+        </div>
+        
+        <nav class="nav">
+            <a href="/client_dashboard">🏠 Panel Principal</a>
+            <a href="/reservations">📅 Mis Reservas</a>
+            <a href="/profile">👤 Mi Perfil</a>
+            <a href="/progress">📊 Mi Progreso</a>
+            <a href="/logout">🚪 Cerrar Sesión</a>
+        </nav>
+        
+        {% if reservation %}
+        <div class="card">
+            <h2>📋 Detalles de la Reserva</h2>
+            <div class="reservation-summary">
+                <div class="summary-item">
+                    <strong>🏋️‍♂️ Servicio:</strong> {{ reservation.service_name }}
+                </div>
+                <div class="summary-item">
+                    <strong>👨‍🏫 Entrenador:</strong> {{ reservation.trainer_name }}
+                </div>
+                <div class="summary-item">
+                    <strong>📅 Fecha:</strong> {{ reservation.date or 'Por confirmar' }}
+                </div>
+                <div class="summary-item">
+                    <strong>⏰ Hora:</strong> {{ reservation.time or 'Por confirmar' }}
+                </div>
+                <div class="summary-item total">
+                    <strong>💰 Total a Pagar:</strong> 
+                    <span class="price">€{{ "%.2f"|format(reservation.total_price or 0) }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>💳 Información de Pago</h2>
+            <form action="/process_payment" method="POST" id="payment-form">
+                <input type="hidden" name="reservation_id" value="{{ reservation.id }}">
+                
+                <div class="payment-section">
+                    <h3>🔒 Pago Seguro con Stripe</h3>
+                    <div class="card-element">
+                        <div id="card-element">
+                            <!-- Stripe Element se montará aquí -->
+                        </div>
+                        <div id="card-errors" role="alert"></div>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary payment-btn" id="submit-button">
+                        <span id="button-text">💳 Pagar €{{ "%.2f"|format(reservation.total_price or 0) }}</span>
+                        <div id="spinner" class="spinner hidden"></div>
+                    </button>
+                </div>
+                
+                <div class="security-info">
+                    <h3>🔒 Seguridad Garantizada</h3>
+                    <div class="security-features">
+                        <div class="feature">
+                            <span class="icon">🛡️</span>
+                            <span>Conexión segura SSL</span>
+                        </div>
+                        <div class="feature">
+                            <span class="icon">🔐</span>
+                            <span>Cifrado de datos</span>
+                        </div>
+                        <div class="feature">
+                            <span class="icon">✅</span>
+                            <span>PCI DSS compliant</span>
+                        </div>
+                        <div class="feature">
+                            <span class="icon">🏦</span>
+                            <span>Stripe certified</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="payment-methods">
+                    <h3>💳 Métodos de Pago Aceptados</h3>
+                    <div class="methods-grid">
+                        <div class="method">
+                            <span class="card-icon">💳</span>
+                            <span>Visa</span>
+                        </div>
+                        <div class="method">
+                            <span class="card-icon">💳</span>
+                            <span>Mastercard</span>
+                        </div>
+                        <div class="method">
+                            <span class="card-icon">💳</span>
+                            <span>American Express</span>
+                        </div>
+                        <div class="method">
+                            <span class="card-icon">💳</span>
+                            <span>Maestro</span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <div class="card">
+            <h2>📋 Política de Reembolso</h2>
+            <div class="refund-policy">
+                <div class="policy-item">
+                    <strong>✅ Cancelación con 24h+:</strong>
+                    <span>Reembolso completo (100%)</span>
+                </div>
+                <div class="policy-item">
+                    <strong>⚠️ Cancelación con menos de 24h:</strong>
+                    <span>Reembolso parcial (50%)</span>
+                </div>
+                <div class="policy-item">
+                    <strong>❌ No presentación:</strong>
+                    <span>Sin reembolso (0%)</span>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="card">
+            <h2>❌ Reserva no encontrada</h2>
+            <p>La reserva que intentas pagar no existe o no te pertenece.</p>
+            <a href="/reservations" class="btn-primary">Ver Mis Reservas</a>
+        </div>
+        {% endif %}
+    </div>
+    
+    <style>
+        .reservation-summary {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e1e8ed;
+        }
+        
+        .summary-item.total {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #28a745;
+            border-bottom: 2px solid #28a745;
+        }
+        
+        .price {
+            font-size: 1.5rem;
+            color: #28a745;
+        }
+        
+        .payment-section {
+            margin: 20px 0;
+        }
+        
+        .card-element {
+            background: white;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .payment-btn {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+        
+        .payment-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+        }
+        
+        .spinner {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #28a745;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-left: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .security-info {
+            margin: 30px 0;
+            padding: 20px;
+            background: #e3f2fd;
+            border-radius: 10px;
+        }
+        
+        .security-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .icon {
+            font-size: 1.2rem;
+        }
+        
+        .payment-methods {
+            margin: 30px 0;
+        }
+        
+        .methods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .method {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #e1e8ed;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+        
+        .method:hover {
+            transform: translateY(-2px);
+        }
+        
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+        
+        .refund-policy {
+            margin-top: 15px;
+        }
+        
+        .policy-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e1e8ed;
+        }
+        
+        #card-errors {
+            color: #dc3545;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            background: #f8d7da;
+        }
+    </style>
+    
+    <script>
+        // Configurar Stripe
+        const stripe = Stripe('{{ stripe_public_key }}');
+        const elements = stripe.elements();
+        
+        // Crear elemento de tarjeta
+        const cardElement = elements.create('card', {
+            style: {
+                base: {
+                    fontSize: '16px',
+                    color: '#424770',
+                    '::placeholder': {
+                        color: '#aab7c4',
+                    },
+                },
+            },
+        });
+        
+        cardElement.mount('#card-element');
+        
+        // Manejar errores
+        cardElement.on('change', ({error}) => {
+            const displayError = document.getElementById('card-errors');
+            if (error) {
+                displayError.textContent = error.message;
+            } else {
+                displayError.textContent = '';
+            }
+        });
+        
+        // Manejar envío del formulario
+        const form = document.getElementById('payment-form');
+        const submitButton = document.getElementById('submit-button');
+        const buttonText = document.getElementById('button-text');
+        const spinner = document.getElementById('spinner');
+        
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            
+            // Mostrar spinner
+            submitButton.disabled = true;
+            buttonText.classList.add('hidden');
+            spinner.classList.remove('hidden');
+            
+            const {token, error} = await stripe.createToken(cardElement);
+            
+            if (error) {
+                // Mostrar error
+                document.getElementById('card-errors').textContent = error.message;
+                submitButton.disabled = false;
+                buttonText.classList.remove('hidden');
+                spinner.classList.add('hidden');
+            } else {
+                // Añadir token al formulario y enviar
+                const hiddenInput = document.createElement('input');
+                hiddenInput.setAttribute('type', 'hidden');
+                hiddenInput.setAttribute('name', 'stripeToken');
+                hiddenInput.setAttribute('value', token.id);
+                form.appendChild(hiddenInput);
+                
+                form.submit();
+            }
+        });
+    </script>
+</body>
+</html>

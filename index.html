@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JJ Coach Manager - Entrenamiento Personal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    
+    <div class="container">
+        <div class="hero">
+            <h1>💪 JJ Coach Manager</h1>
+            <p class="subtitle">Transforma tu cuerpo, cambia tu vida</p>
+        </div>
+        
+        <div class="login-section">
+            <!-- Login Cliente -->
+            <div class="login-main">
+                <div class="card">
+                    <h2>🏃‍♂️ Cliente</h2>
+                    <p>Accede a tu panel personal</p>
+                    
+                    <form method="POST" action="/login" novalidate>
+                        <input type="hidden" name="user_type" value="client">
+                        
+                        <div class="form-group">
+                            <label for="client_email">Email</label>
+                            <input type="email" id="client_email" name="email" class="form-control" 
+                                   placeholder="tu@email.com" required autocomplete="email">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="client_password">Contraseña</label>
+                            <input type="password" id="client_password" name="password" class="form-control" 
+                                   placeholder="Tu contraseña" required autocomplete="current-password">
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">
+                            Iniciar Sesión
+                        </button>
+                    </form>
+                    
+                    <p style="text-align: center; margin-top: 15px;">
+                        ¿Nuevo cliente? <a href="/register" class="link-primary">Regístrate aquí</a>
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Login Entrenador -->
+            <div class="login-trainer">
+                <div class="card">
+                    <h3>💪 Entrenador</h3>
+                    
+                    <form method="POST" action="/login" novalidate>
+                        <input type="hidden" name="user_type" value="trainer">
+                        
+                        <div class="form-group">
+                            <label for="trainer_email">Email</label>
+                            <input type="email" id="trainer_email" name="email" class="form-control" 
+                                   placeholder="entrenador@email.com" required autocomplete="email">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="trainer_password">Contraseña</label>
+                            <input type="password" id="trainer_password" name="password" class="form-control" 
+                                   placeholder="Tu contraseña" required autocomplete="current-password">
+                        </div>
+                        
+                        <button type="submit" class="btn btn-secondary" style="width: 100%;">
+                            Acceder
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        {% if tables_count is defined %}
+        <div class="card system-status">
+            <h2>✅ Sistema Operativo</h2>
+            <p>Base de datos MySQL conectada</p>
+            <p>📊 {{ tables_count }} tablas activas</p>
+        </div>
+        {% endif %}
+        
+        <div class="dashboard-grid">
+            <a href="/register" class="stat-card" style="text-decoration: none; color: inherit; display: block;">
+                <h3>🏋️‍♂️</h3>
+                <p>Entrenamiento Personalizado</p>
+                <small style="color: #667eea;">Regístrate como cliente →</small>
+            </a>
+            <a href="/schedule" class="stat-card" style="text-decoration: none; color: inherit; display: block;">
+                <h3>📅</h3>
+                <p>Reservas Flexibles</p>
+                <small style="color: #667eea;">Ver horario →</small>
+            </a>
+            <a href="/progress" class="stat-card" style="text-decoration: none; color: inherit; display: block;">
+                <h3>📊</h3>
+                <p>Seguimiento de Progreso</p>
+                <small style="color: #667eea;">Ver progreso →</small>
+            </a>
+        </div>
+    </div>
+    
+    <footer class="footer">
+        <p>&copy; 2024 JJ Coach Manager - Todos los derechos reservados</p>
+    </footer>
+    
+    <style>
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+            border-color: #667eea;
+        }
+        
+        .stat-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .stat-card small {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .stat-card:hover small {
+            opacity: 1;
+        }
+    </style>
+</body>
+</html>

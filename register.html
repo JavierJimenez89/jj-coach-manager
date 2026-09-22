@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - JJ Coach Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="form-container">
+                <h2>🏋️‍♂️ Crear Cuenta</h2>
+                <p>Únete a JJ Coach Manager y comienza tu transformación</p>
+                
+                {% if error %}
+                    <div class="alert alert-error">{{ error }}</div>
+                {% endif %}
+                
+                <form method="POST">
+                    <div class="form-group">
+                        <label for="name">Nombre Completo</label>
+                        <input type="text" id="name" name="name" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Contraseña</label>
+                        <input type="password" id="password" name="password" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="user_type">Soy...</label>
+                        <select id="user_type" name="user_type" class="form-control" required>
+                            <option value="">Selecciona tu rol</option>
+                            <option value="client">🏃‍♂️ Cliente</option>
+                            <option value="trainer">💪 Entrenador</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Registrarse</button>
+                </form>
+                
+                <p style="text-align: center; margin-top: 20px;">
+                    ¿Ya tienes cuenta? <a href="/login">Inicia sesión aquí</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

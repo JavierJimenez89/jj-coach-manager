@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Progreso - JJ Coach Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Mi Progreso</h1>
+            <p>Seguimiento de tu avance</p>
+        </div>
+        
+        <nav class="nav">
+            <a href="/">🏠 Inicio</a>
+            <a href="/client_dashboard">🎯 Panel</a>
+            <a href="/reservations">📅 Mis Reservas</a>
+            <a href="/profile">👤 Mi Perfil</a>
+            <a href="/progress">📊 Mi Progreso</a>
+            <a href="/logout">🚪 Cerrar Sesión</a>
+        </nav>
+        
+        <div class="dashboard-grid">
+            <div class="stat-card">
+                <h3>🏋️‍♂️</h3>
+                <p>Sesiones Totales</p>
+                <h2>{{ stats.total_sessions if stats else 0 }}</h2>
+            </div>
+            
+            <div class="stat-card">
+                <h3>✅</h3>
+                <p>Sesiones Completadas</p>
+                <h2>{{ stats.completed_sessions if stats else 0 }}</h2>
+            </div>
+            
+            <div class="stat-card">
+                <h3>📈</h3>
+                <p>Tasa de Completion</p>
+                <h2>{{ completion_rate }}%</h2>
+            </div>
+            
+            <div class="stat-card">
+                <h3>🔥</h3>
+                <p>Sesiones Recientes</p>
+                <h2>{{ stats.recent_sessions if stats else 0 }}</h2>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>📈 Gráfico de Progreso</h2>
+            <div class="progress-chart">
+                <div class="month-bar">
+                    <div class="month-label">Enero</div>
+                    <div class="bar-container">
+                        <div class="bar" style="width: 80%;"></div>
+                    </div>
+                    <div class="month-count">8 sesiones</div>
+                </div>
+                <div class="month-bar">
+                    <div class="month-label">Febrero</div>
+                    <div class="bar-container">
+                        <div class="bar" style="width: 100%;"></div>
+                    </div>
+                    <div class="month-count">10 sesiones</div>
+                </div>
+                <div class="month-bar">
+                    <div class="month-label">Marzo</div>
+                    <div class="bar-container">
+                        <div class="bar" style="width: 60%;"></div>
+                    </div>
+                    <div class="month-count">6 sesiones</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>📝 Notas del Entrenador</h2>
+            {% if progress_notes %}
+            <div class="notes-timeline">
+                {% for note in progress_notes %}
+                <div class="note-item">
+                    <div class="note-date">{{ note.created_at.strftime('%d/%m/%Y') if note.created_at else 'N/A' }}</div>
+                    <div class="note-content">
+                        <strong>{{ note.trainer_name or 'Entrenador' }}</strong>
+                        <p>{{ note.note }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <h3>📝 No hay notas aún</h3>
+                <p>Tu entrenador agregará notas sobre tu progreso</p>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="card">
+            <h2>🎯 Objetivos</h2>
+            <div class="goals-section">
+                <div class="goal-item">
+                    <h4>💪 Fuerza</h4>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 75%;"></div>
+                    </div>
+                    <p>75% completado</p>
+                </div>
+                <div class="goal-item">
+                    <h4>🏃‍♂️ Resistencia</h4>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 60%;"></div>
+                    </div>
+                    <p>60% completado</p>
+                </div>
+                <div class="goal-item">
+                    <h4>⚖️ Peso Saludable</h4>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 40%;"></div>
+                    </div>
+                    <p>40% completado</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

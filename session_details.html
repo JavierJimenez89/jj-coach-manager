@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles de Sesión - JJ Coach Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📅 Detalles de la Próxima Sesión</h1>
+            <p>Información completa de tu entrenamiento</p>
+        </div>
+        
+        <nav class="nav">
+            <a href="/client_dashboard">🏠 Panel Principal</a>
+            <a href="/reservations">📅 Mis Reservas</a>
+            <a href="/profile">👤 Mi Perfil</a>
+            <a href="/progress">📊 Mi Progreso</a>
+            <a href="/logout">🚪 Cerrar Sesión</a>
+        </nav>
+        
+        <div class="card">
+            <h2>🏋️‍♂️ Información de la Sesión</h2>
+            <div class="session-details">
+                <div class="detail-item">
+                    <strong>📅 Fecha:</strong> {{ session.date or "Mañana" }}
+                </div>
+                <div class="detail-item">
+                    <strong>⏰ Hora:</strong> {{ session.time or "10:00 AM" }}
+                </div>
+                <div class="detail-item">
+                    <strong>👨‍🏫 Entrenador:</strong> {{ session.trainer_name or "Juan Entrenador" }}
+                </div>
+                <div class="detail-item">
+                    <strong>🏋️‍♂️ Tipo de Entrenamiento:</strong> {{ session.service_name or "Entrenamiento de Fuerza" }}
+                </div>
+                <div class="detail-item">
+                    <strong>⏱️ Duración:</strong> {{ session.duration or "60 minutos" }}
+                </div>
+                <div class="detail-item">
+                    <strong>💰 Precio:</strong> {{ session.price or "50.00€" }}
+                </div>
+                <div class="detail-item">
+                    <strong>📍 Ubicación:</strong> {{ session.location or "Gimnasio Central" }}
+                </div>
+            </div>
+            
+            <div class="session-actions">
+                <a href="/reschedule_session/{{ session.id or '1' }}" class="btn btn-secondary">🔄 Reprogramar</a>
+                <a href="/cancel_session/{{ session.id or '1' }}" class="btn btn-danger">❌ Cancelar</a>
+                <a href="/client_dashboard" class="btn btn-primary">✅ Confirmar Asistencia</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>📋 Notas del Entrenador</h2>
+            <p>{{ session.trainer_notes or "En esta sesión nos enfocaremos en ejercicios de fuerza para la parte superior del cuerpo. Recuerda traer tu botella de agua y toalla." }}</p>
+        </div>
+        
+        <div class="card">
+            <h2>🎯 Objetivos de la Sesión</h2>
+            <ul class="goals-list">
+                <li>Mejorar técnica en levantamiento de pesas</li>
+                <li>Aumentar fuerza en brazos y espalda</li>
+                <li>Trabajar en resistencia muscular</li>
+                <li>Corregir postura durante ejercicios</li>
+            </ul>
+        </div>
+        
+        <div class="card">
+            <h2>📞 Contacto de Emergencia</h2>
+            <p>Si necesitas cancelar o reprogramar con menos de 24 horas de anticipación, contacta directamente a tu entrenador:</p>
+            <div class="contact-info">
+                <strong>📧 Email:</strong> {{ session.trainer_email or "trainer@jjcoach.com" }}<br>
+                <strong>📱 Teléfono:</strong> {{ session.trainer_phone or "+34 600 000 000" }}
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        .session-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .detail-item {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .session-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .goals-list {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+        
+        .goals-list li {
+            margin: 8px 0;
+            color: #2c3e50;
+        }
+        
+        .contact-info {
+            margin-top: 10px;
+            padding: 15px;
+            background: #e3f2fd;
+            border-radius: 8px;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover, .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        @media (max-width: 768px) {
+            .session-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .session-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</body>
+</html>

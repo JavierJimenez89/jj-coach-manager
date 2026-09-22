@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Reservas - JJ Coach Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📅 Mis Reservas</h1>
+            <p>Tus sesiones de entrenamiento agendadas</p>
+        </div>
+        
+        <nav class="nav">
+            <a href="/client_dashboard">� Panel Principal</a>
+            <a href="/reservations">📅 Mis Reservas</a>
+            <a href="/profile">👤 Mi Perfil</a>
+            <a href="/progress">📊 Mi Progreso</a>
+            <a href="/logout">🚪 Cerrar Sesión</a>
+        </nav>
+        
+        <div class="card">
+            <h2>Historial de Reservas</h2>
+            {% if reservations %}
+                <div class="reservations-list">
+                    {% for reservation in reservations %}
+                    <div class="session-item">
+                        <div class="session-info">
+                            <strong>{{ reservation.reservation_date }} - {{ reservation.start_time }}</strong>
+                            <p>{{ reservation.service_name or 'Sesión de entrenamiento' }}</p>
+                            <p>Con: {{ reservation.trainer_name or 'Entrenador' }}</p>
+                        </div>
+                        <div class="session-details">
+                            <div class="session-price">€{{ reservation.total_price or '0' }}</div>
+                            <div class="status-{{ reservation.status or 'pending' }}">
+                                {{ reservation.status or 'pending' | title }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>📅 No tienes reservas</h3>
+                    <p>Agenda tu primera sesión de entrenamiento para comenzar</p>
+                    <a href="/request_session" class="btn btn-primary">📅 Agendar Sesión</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

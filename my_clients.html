@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Clientes - JJ Coach Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💪 Mis Clientes</h1>
+            <p>Gestiona todos tus clientes</p>
+        </div>
+        
+        <nav class="nav">
+            <a href="/trainer_dashboard">🏠 Panel Principal</a>
+            <a href="/my_clients">👥 Mis Clientes</a>
+            <a href="/schedule">📅 Mi Horario</a>
+            <a href="/services">🏋️‍♂️ Servicios</a>
+            <a href="/earnings">💰 Ganancias</a>
+            <a href="/logout">🚪 Cerrar Sesión</a>
+        </nav>
+        
+        <div class="card">
+            <h2>Lista de Clientes</h2>
+            
+            {% if clients %}
+                <div class="clients-grid">
+                    {% for client in clients %}
+                        <div class="client-card">
+                            <div class="client-info">
+                                <h3>{{ client['name'] }}</h3>
+                                <p>📧 {{ client['email'] }}</p>
+                                <p>📅 Registrado: {{ client['created_at'].strftime('%d/%m/%Y') }}</p>
+                            </div>
+                            <div class="client-actions">
+                                <a href="/client_detail/{{ client['id'] }}" class="btn btn-primary">Ver Detalles</a>
+                                <a href="/schedule_session/{{ client['id'] }}" class="btn btn-secondary">Agendar Sesión</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>📭 No tienes clientes aún</h3>
+                    <p>Los clientes aparecerán aquí cuando se registren en el sistema.</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="card">
+            <h2>Estadísticas de Clientes</h2>
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <h3>{{ total_clients }}</h3>
+                    <p>Total de Clientes</p>
+                </div>
+                <div class="stat-card">
+                    <h3>{{ new_clients_month }}</h3>
+                    <p>Nuevos este mes</p>
+                </div>
+                <div class="stat-card">
+                    <h3>{{ active_clients }}</h3>
+                    <p>Clientes Activos</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

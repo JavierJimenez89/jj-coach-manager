@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Horario - JJ Coach Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📅 Mi Horario</h1>
+            <p>Gestiona tu agenda de sesiones</p>
+        </div>
+        
+        <nav class="nav">
+            <a href="/trainer_dashboard">🏠 Panel Principal</a>
+            <a href="/my_clients">👥 Mis Clientes</a>
+            <a href="/schedule">📅 Mi Horario</a>
+            <a href="/services">🏋️‍♂️ Servicios</a>
+            <a href="/earnings">💰 Ganancias</a>
+            <a href="/logout">🚪 Cerrar Sesión</a>
+        </nav>
+        
+        <div class="card">
+            <h2>📆 Vista Semanal</h2>
+            <div class="calendar-controls">
+                <a href="/schedule?week={{ (week_offset or 0) - 1 }}" class="btn btn-secondary">← Semana Anterior</a>
+                <span class="week-display">
+                    {% if week_offset == 0 or week_offset is none %}Semana Actual
+                    {% elif week_offset > 0 %}Semana +{{ week_offset }}
+                    {% else %}Semana {{ week_offset }}
+                    {% endif %}
+                </span>
+                <a href="/schedule?week={{ (week_offset or 0) + 1 }}" class="btn btn-secondary">Siguiente Semana →</a>
+            </div>
+            
+            <!-- Filtro de fecha -->
+            <div class="date-filter" style="margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                <h3 style="margin-bottom: 15px; color: #2c3e50;">📅 Ir a fecha específica</h3>
+                <form method="GET" action="/schedule" style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                    <input type="date" 
+                           name="date" 
+                           id="dateFilter" 
+                           class="date-input"
+                           value="{{ week_start.strftime('%Y-%m-%d') if week_start else '' }}"
+                           style="padding: 10px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 14px;">
+                    <button type="submit" class="btn btn-primary">🔍 Ir a la fecha</button>
+                    <button type="button" class="btn btn-secondary" onclick="goToToday()">📍 Hoy</button>
+                </form>
+            </div>
+            
+            <div class="calendar-grid">
+                <div class="calendar-header">
+                    <div class="time-slot">Hora</div>
+                    {% for day in week_days %}
+                        <div class="day-header">
+                            <strong>{{ day['name'] }}</strong>
+                            <small>{{ day['date'].strftime('%d/%m') }}</small>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                {% for hour in time_slots %}
+                    <div class="time-row">
+                        <div class="time-slot">{{ hour }}</div>
+                        {% for day in week_days %}
+                            <div class="day-slot" data-date="{{ day['date'].strftime('%Y-%m-%d') }}" data-time="{{ hour }}">
+                                {% for reservation in day['sessions'] %}
+                                    {% set reservation_hour = reservation['start_time'] %}
+                                    {% if reservation_hour and reservation_hour[:2] == hour[:2] %}
+                                        <div class="session-block {{ reservation['status'] }}" 
+                                             onclick="viewSession({{ reservation.get('id', 0) }})">
+                                            <strong>{{ reservation['client_name'] }}</strong>
+                                            <small>{{ reservation['service_name'] }}</small>
+                                            <span class="session-status">{{ reservation['status'] }}</span>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>📋 Próximas Sesiones</h2>
+            {% if upcoming_sessions %}
+                <div class="sessions-list">
+                    {% for session in upcoming_sessions %}
+                        <div class="session-item">
+                            <div class="session-info">
+                                <strong>{{ session['client_name'] }}</strong>
+                                <p>{{ session['reservation_date'].strftime('%d/%m/%Y') }} - {{ session['start_time'] }} a {{ session['end_time'] }}</p>
+                                <span class="status-{{ session['status'] }}">{{ session['status'] }}</span>
+                            </div>
+                            <div class="session-actions">
+                                {% if session['status'] == 'pending' %}
+                                    <a href="/confirm_session/{{ session['id'] }}" class="btn btn-primary">Confirmar</a>
+                                {% endif %}
+                                <a href="/session_detail/{{ session['id'] }}" class="btn btn-secondary">Ver Detalles</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>📅 Sin sesiones agendadas</h3>
+                    <p>No tienes sesiones programadas para esta semana.</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="dashboard-grid">
+            <div class="stat-card">
+                <h3>{{ today_sessions }}</h3>
+                <p>Sesiones Hoy</p>
+            </div>
+            
+            <div class="stat-card">
+                <h3>{{ week_sessions }}</h3>
+                <p>Sesiones Esta Semana</p>
+            </div>
+            
+            <div class="stat-card">
+                <h3>{{ pending_sessions }}</h3>
+                <p>Sesiones Pendientes</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function changeWeek(direction) {
+            const urlParams = new URLSearchParams(window.location.search);
+            let weekOffset = parseInt(urlParams.get('week') || '0');
+            weekOffset += direction;
+            window.location.href = `/schedule?week=${weekOffset}`;
+        }
+        
+        function viewSession(sessionId) {
+            if (sessionId && sessionId > 0) {
+                window.location.href = `/session_detail/${sessionId}`;
+            }
+        }
+        
+        function goToToday() {
+            const today = new Date();
+            const dateString = today.toISOString().split('T')[0];
+            window.location.href = `/schedule?date=${dateString}`;
+        }
+        
+        // Resaltar el día actual
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toDateString();
+            const daySlots = document.querySelectorAll('.day-slot');
+            daySlots.forEach(slot => {
+                const slotDate = slot.getAttribute('data-date');
+                if (slotDate) {
+                    const slotDateObj = new Date(slotDate);
+                    if (slotDateObj.toDateString() === today) {
+                        slot.style.backgroundColor = 'rgba(102, 126, 234, 0.1)';
+                        slot.style.border = '2px solid #667eea';
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

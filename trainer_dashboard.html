@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Entrenador - JJ Coach Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💪 ¡Hola, {{ name }}!</h1>
+            <p>Tu panel de control de entrenador</p>
+        </div>
+        
+        <nav class="nav">
+            <a href="/">🏠 Inicio</a>
+            <a href="/my_clients">👥 Mis Clientes</a>
+            <a href="/schedule">📅 Mi Horario</a>
+            <a href="/services">🏋️‍♂️ Servicios</a>
+            <a href="/earnings">💰 Ganancias</a>
+            <a href="/logout">🚪 Cerrar Sesión</a>
+        </nav>
+        
+        <div class="dashboard-grid">
+            <div class="stat-card">
+                <h3>👥</h3>
+                <p>Clientes Activos</p>
+                <h2>24</h2>
+            </div>
+            
+            <div class="stat-card">
+                <h3>📅</h3>
+                <p>Sesiones Hoy</p>
+                <h2>6</h2>
+            </div>
+            
+            <div class="stat-card">
+                <h3>💰</h3>
+                <p>Ganancias Mes</p>
+                <h2>€2,450</h2>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Próximas Sesiones Hoy</h2>
+            <div style="margin-top: 20px;">
+                <div style="padding: 15px; background: #f8f9fa; border-radius: 10px; margin-bottom: 10px;">
+                    <strong>9:00 AM - Juan Pérez</strong>
+                    <p>Entrenamiento de fuerza - Nivel intermedio</p>
+                </div>
+                <div style="padding: 15px; background: #f8f9fa; border-radius: 10px; margin-bottom: 10px;">
+                    <strong>10:30 AM - María García</strong>
+                    <p>Cardio y abs - Nivel principiante</p>
+                </div>
+                <div style="padding: 15px; background: #f8f9fa; border-radius: 10px;">
+                    <strong>2:00 PM - Carlos López</strong>
+                    <p>Entrenamiento personalizado - Nivel avanzado</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Acciones Rápidas</h2>
+            <div style="display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap;">
+                <a href="/schedule_session" class="btn btn-primary" style="text-decoration: none; display: inline-block;">➕ Agendar Sesión</a>
+                <a href="/earnings" class="btn btn-secondary" style="text-decoration: none; display: inline-block;">📊 Ver Estadísticas</a>
+                <a href="/services" class="btn btn-secondary" style="text-decoration: none; display: inline-block;">⚙️ Configurar Disponibilidad</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

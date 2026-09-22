@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de Sesión - JJ Coach Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Detalle de Sesión</h1>
+            <p>Información completa de la sesión</p>
+        </div>
+        
+        <nav class="nav">
+            <a href="/trainer_dashboard">🏠 Panel Principal</a>
+            <a href="/my_clients">👥 Mis Clientes</a>
+            <a href="/schedule">📅 Mi Horario</a>
+            <a href="/services">🏋️‍♂️ Servicios</a>
+            <a href="/earnings">💰 Ganancias</a>
+            <a href="/logout">🚪 Cerrar Sesión</a>
+        </nav>
+        
+        <div class="card">
+            <h2>📋 Información de la Sesión</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <strong>Cliente:</strong> {{ reservation['client_name'] }}
+                </div>
+                <div class="info-item">
+                    <strong>Servicio:</strong> {{ reservation['service_name'] }}
+                </div>
+                <div class="info-item">
+                    <strong>Fecha:</strong> {{ reservation['reservation_date'].strftime('%d/%m/%Y') }}
+                </div>
+                <div class="info-item">
+                    <strong>Horario:</strong> {{ reservation['start_time'] }} - {{ reservation['end_time'] }}
+                </div>
+                <div class="info-item">
+                    <strong>Precio:</strong> €{{ reservation['total_price'] }}
+                </div>
+                <div class="info-item">
+                    <strong>Estado:</strong> 
+                    <span class="status-{{ reservation['status'] }}">{{ reservation['status'] }}</span>
+                </div>
+            </div>
+            
+            {% if reservation['notes'] %}
+                <div style="margin-top: 20px;">
+                    <h3>📝 Notas:</h3>
+                    <p>{{ reservation['notes']|nl2br }}</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="card">
+            <h2>⚡ Acciones</h2>
+            <div class="action-buttons">
+                {% if reservation['status'] == 'pending' %}
+                    <a href="/confirm_session/{{ reservation['id'] }}" class="btn btn-primary">✅ Confirmar Sesión</a>
+                {% endif %}
+                {% if reservation['status'] == 'confirmed' %}
+                    <a href="/complete_session/{{ reservation['id'] }}" class="btn btn-success">🏁 Marcar Completada</a>
+                {% endif %}
+                <a href="/cancel_session/{{ reservation['id'] }}" class="btn btn-secondary">❌ Cancelar</a>
+                <a href="/reschedule_session/{{ reservation['id'] }}" class="btn btn-secondary">📅 Reagendar</a>
+            </div>
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <a href="/schedule" class="btn btn-secondary">← Volver al Horario</a>
+        </div>
+    </div>
+</body>
+</html>

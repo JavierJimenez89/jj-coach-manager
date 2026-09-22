@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Cliente - JJ Coach Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏃‍♂️ ¡Hola, {{ name }}!</h1>
+            <p>Tu panel personal de entrenamiento</p>
+        </div>
+        
+        <nav class="nav">
+            <a href="/client_dashboard">🏠 Panel Principal</a>
+            <a href="/reservations">📅 Mis Reservas</a>
+            <a href="/profile">👤 Mi Perfil</a>
+            <a href="/progress">📊 Mi Progreso</a>
+            <a href="/cart" class="cart-link">🛒 Carrito (<span id="cart-count">0</span>)</a>
+            <a href="/logout">🚪 Cerrar Sesión</a>
+        </nav>
+        
+        <div class="dashboard-grid">
+            <div class="stat-card">
+                <h3>🏋️‍♂️</h3>
+                <p>Sesiones Completadas</p>
+                <h2>12</h2>
+            </div>
+            
+            <div class="stat-card">
+                <h3>📈</h3>
+                <p>Progreso Este Mes</p>
+                <h2>+15%</h2>
+            </div>
+            
+            <div class="stat-card">
+                <h3>🎯</h3>
+                <p>Objetivos Alcanzados</h3>
+                <h2>8/10</h2>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Próxima Sesión</h2>
+            <p><strong>Mañana, 10:00 AM</strong></p>
+            <p>Entrenamiento de fuerza con tu coach personal</p>
+            <a href="/reservations" class="btn btn-primary">Ver Detalles</a>
+        </div>
+        
+        <div class="card">
+            <h2>📅 Agendar Nueva Sesión</h2>
+            <p>Solicita una nueva sesión con tu entrenador</p>
+            <a href="/request_session" class="btn btn-primary">📅 Solicitar Sesión</a>
+        </div>
+    </div>
+</body>
+</html>

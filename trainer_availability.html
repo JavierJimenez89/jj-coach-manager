@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disponibilidad del Entrenador - JJ Coach Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📅 Disponibilidad del Entrenador</h1>
+            <p>Consulta los horarios disponibles para agendar tus sesiones</p>
+        </div>
+        
+        <nav class="nav">
+            <a href="/client_dashboard">🏠 Panel Principal</a>
+            <a href="/reservations">📅 Mis Reservas</a>
+            <a href="/profile">👤 Mi Perfil</a>
+            <a href="/progress">📊 Mi Progreso</a>
+            <a href="/logout">🚪 Cerrar Sesión</a>
+        </nav>
+        
+        <div class="card">
+            <h2>👨‍🏫 Información del Entrenador</h2>
+            <div class="trainer-info">
+                <div class="trainer-avatar">
+                    <h3>🏋️‍♂️</h3>
+                </div>
+                <div class="trainer-details">
+                    <h3>{{ trainer.name or "Juan Entrenador" }}</h3>
+                    <p>Entrenador Personal Certificado</p>
+                    <p>📧 {{ trainer.email or "trainer@jjcoach.com" }}</p>
+                    <p>📱 {{ trainer.phone or "+34 600 000 000" }}</p>
+                    <div class="trainer-specialties">
+                        <strong>Especialidades:</strong>
+                        <span class="specialty-tag">Fuerza</span>
+                        <span class="specialty-tag">Cardio</span>
+                        <span class="specialty-tag">Flexibilidad</span>
+                        <span class="specialty-tag">Nutrición</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>📅 Horario Semanal</h2>
+            <div class="availability-grid">
+                <div class="day-card">
+                    <h3>🗓️ Lunes</h3>
+                    <div class="time-slots">
+                        <div class="time-slot available">08:00 - 09:00</div>
+                        <div class="time-slot available">09:00 - 10:00</div>
+                        <div class="time-slot booked">10:00 - 11:00</div>
+                        <div class="time-slot available">11:00 - 12:00</div>
+                        <div class="time-slot available">17:00 - 18:00</div>
+                        <div class="time-slot available">18:00 - 19:00</div>
+                    </div>
+                </div>
+                
+                <div class="day-card">
+                    <h3>🗓️ Martes</h3>
+                    <div class="time-slots">
+                        <div class="time-slot available">08:00 - 09:00</div>
+                        <div class="time-slot booked">09:00 - 10:00</div>
+                        <div class="time-slot available">10:00 - 11:00</div>
+                        <div class="time-slot available">11:00 - 12:00</div>
+                        <div class="time-slot available">17:00 - 18:00</div>
+                        <div class="time-slot available">18:00 - 19:00</div>
+                    </div>
+                </div>
+                
+                <div class="day-card">
+                    <h3>🗓️ Miércoles</h3>
+                    <div class="time-slots">
+                        <div class="time-slot available">08:00 - 09:00</div>
+                        <div class="time-slot available">09:00 - 10:00</div>
+                        <div class="time-slot available">10:00 - 11:00</div>
+                        <div class="time-slot booked">11:00 - 12:00</div>
+                        <div class="time-slot available">17:00 - 18:00</div>
+                        <div class="time-slot booked">18:00 - 19:00</div>
+                    </div>
+                </div>
+                
+                <div class="day-card">
+                    <h3>🗓️ Jueves</h3>
+                    <div class="time-slots">
+                        <div class="time-slot available">08:00 - 09:00</div>
+                        <div class="time-slot available">09:00 - 10:00</div>
+                        <div class="time-slot available">10:00 - 11:00</div>
+                        <div class="time-slot available">11:00 - 12:00</div>
+                        <div class="time-slot booked">17:00 - 18:00</div>
+                        <div class="time-slot available">18:00 - 19:00</div>
+                    </div>
+                </div>
+                
+                <div class="day-card">
+                    <h3>🗓️ Viernes</h3>
+                    <div class="time-slots">
+                        <div class="time-slot available">08:00 - 09:00</div>
+                        <div class="time-slot available">09:00 - 10:00</div>
+                        <div class="time-slot booked">10:00 - 11:00</div>
+                        <div class="time-slot available">11:00 - 12:00</div>
+                        <div class="time-slot available">17:00 - 18:00</div>
+                        <div class="time-slot available">18:00 - 19:00</div>
+                    </div>
+                </div>
+                
+                <div class="day-card">
+                    <h3>🗓️ Sábado</h3>
+                    <div class="time-slots">
+                        <div class="time-slot available">09:00 - 10:00</div>
+                        <div class="time-slot available">10:00 - 11:00</div>
+                        <div class="time-slot available">11:00 - 12:00</div>
+                        <div class="time-slot booked">12:00 - 13:00</div>
+                        <div class="time-slot available">17:00 - 18:00</div>
+                    </div>
+                </div>
+                
+                <div class="day-card">
+                    <h3>🗓️ Domingo</h3>
+                    <div class="time-slots">
+                        <div class="time-slot unavailable">No disponible</div>
+                        <div class="time-slot unavailable">No disponible</div>
+                        <div class="time-slot unavailable">No disponible</div>
+                        <div class="time-slot unavailable">No disponible</div>
+                        <div class="time-slot unavailable">No disponible</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>🎯 Agendar Sesión</h2>
+            <form method="POST" action="/book_session" class="booking-form">
+                <div class="form-group">
+                    <label>Selecciona Día</label>
+                    <select name="day" required>
+                        <option value="">Elige un día...</option>
+                        <option value="lunes">Lunes</option>
+                        <option value="martes">Martes</option>
+                        <option value="miercoles">Miércoles</option>
+                        <option value="jueves">Jueves</option>
+                        <option value="viernes">Viernes</option>
+                        <option value="sabado">Sábado</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Selecciona Hora</label>
+                    <select name="time" required>
+                        <option value="">Elige una hora...</option>
+                        <option value="08:00">08:00 - 09:00</option>
+                        <option value="09:00">09:00 - 10:00</option>
+                        <option value="10:00">10:00 - 11:00</option>
+                        <option value="11:00">11:00 - 12:00</option>
+                        <option value="17:00">17:00 - 18:00</option>
+                        <option value="18:00">18:00 - 19:00</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Tipo de Entrenamiento</label>
+                    <select name="service" required>
+                        <option value="">Elige un servicio...</option>
+                        <option value="fuerza">Entrenamiento de Fuerza (€50)</option>
+                        <option value="cardio">Entrenamiento Cardio (€45)</option>
+                        <option value="flexibilidad">Flexibilidad y Yoga (€40)</option>
+                        <option value="funcional">Entrenamiento Funcional (€55)</option>
+                        <option value="personal">Entrenamiento Personal Completo (€60)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Notas Adicionales</label>
+                    <textarea name="notes" placeholder="¿Algún objetivo específico para esta sesión?"></textarea>
+                </div>
+                
+                <button type="submit" class="btn-primary">📅 Agendar Sesión</button>
+            </form>
+        </div>
+    </div>
+    
+    <style>
+        .trainer-info {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin: 20px 0;
+        }
+        
+        .trainer-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+        
+        .trainer-details h3 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+        }
+        
+        .trainer-specialties {
+            margin-top: 10px;
+        }
+        
+        .specialty-tag {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin: 2px;
+        }
+        
+        .availability-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .day-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid #e1e8ed;
+        }
+        
+        .day-card h3 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+            text-align: center;
+        }
+        
+        .time-slots {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .time-slot {
+            padding: 8px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .time-slot.available {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .time-slot.available:hover {
+            background: #c3e6cb;
+            transform: translateY(-1px);
+        }
+        
+        .time-slot.booked {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            cursor: not-allowed;
+        }
+        
+        .time-slot.unavailable {
+            background: #e2e3e5;
+            color: #6c757d;
+            border: 1px solid #ced4da;
+            cursor: not-allowed;
+        }
+        
+        .booking-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .booking-form .form-group:last-child {
+            grid-column: 1 / -1;
+        }
+        
+        @media (max-width: 768px) {
+            .trainer-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .availability-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .booking-form {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</body>
+</html>

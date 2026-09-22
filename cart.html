@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito de Compras - JJ Coach Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛒 Mi Carrito</h1>
+            <p>Tus servicios seleccionados</p>
+        </div>
+        
+        <nav class="nav">
+            <a href="/client_dashboard">🏠 Panel Principal</a>
+            <a href="/reservations">📅 Mis Reservas</a>
+            <a href="/profile">👤 Mi Perfil</a>
+            <a href="/progress">📊 Mi Progreso</a>
+            <a href="/logout">🚪 Cerrar Sesión</a>
+        </nav>
+        
+        {% if cart_count > 0 %}
+        <div class="card">
+            <h2>🛒 Items en el Carrito ({{ cart_count }})</h2>
+            
+            <div class="cart-items">
+                {% for item in cart_items %}
+                <div class="cart-item">
+                    <div class="item-info">
+                        <h3>{{ item.name }}</h3>
+                        <p class="item-type">
+                            {% if item.type == 'service' %}
+                                🏋️‍♂️ Servicio de Entrenamiento
+                            {% else %}
+                                📅 Sesión Personalizada
+                            {% endif %}
+                        </p>
+                        {% if item.details.description %}
+                        <p class="item-description">{{ item.details.description }}</p>
+                        {% endif %}
+                        <p class="item-duration">
+                            {% if item.details.duration %}
+                                ⏱️ Duración: {{ item.details.duration }} minutos
+                            {% endif %}
+                        </p>
+                    </div>
+                    
+                    <div class="item-controls">
+                        <form action="/update_cart" method="POST" class="quantity-form">
+                            <input type="hidden" name="item_id" value="{{ item.id }}">
+                            <div class="quantity-control">
+                                <label>Cantidad:</label>
+                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="10" class="quantity-input">
+                            </div>
+                            <button type="submit" class="btn-update">✏️</button>
+                        </form>
+                        
+                        <div class="item-price">
+                            <span class="price">€{{ "%.2f"|format(item.price) }}</span>
+                            <span class="subtotal">× {{ item.quantity }} = €{{ "%.2f"|format(item.price * item.quantity) }}</span>
+                        </div>
+                        
+                        <a href="/remove_from_cart/{{ item.id }}" class="btn-remove">🗑️ Eliminar</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="cart-summary">
+                <div class="summary-item">
+                    <span>Subtotal:</span>
+                    <span>€{{ "%.2f"|format(cart_total) }}</span>
+                </div>
+                <div class="summary-item">
+                    <span>IVA (21%):</span>
+                    <span>€{{ "%.2f"|format(cart_total * 0.21) }}</span>
+                </div>
+                <div class="summary-item total">
+                    <span><strong>Total:</strong></span>
+                    <span><strong>€{{ "%.2f"|format(cart_total * 1.21) }}</strong></span>
+                </div>
+            </div>
+            
+            <div class="cart-actions">
+                <a href="/clear_cart" class="btn btn-secondary">🗑️ Vaciar Carrito</a>
+                <a href="/checkout" class="btn-primary">💳 Proceder al Pago</a>
+            </div>
+        </div>
+        
+        {% else %}
+        <div class="card">
+            <div class="empty-cart">
+                <h2>🛒 Tu carrito está vacío</h2>
+                <p>No tienes ningún servicio en tu carrito de compras.</p>
+                <div class="empty-actions">
+                    <a href="/client_dashboard" class="btn-primary">🏠 Volver al Panel</a>
+                    <a href="/request_session" class="btn-secondary">📅 Solicitar Sesión</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    <style>
+        .cart-items {
+            margin: 20px 0;
+        }
+        
+        .cart-item {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            padding: 20px;
+            border: 1px solid #e1e8ed;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            background: #f8f9fa;
+        }
+        
+        .item-info h3 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+        }
+        
+        .item-type {
+            color: #667eea;
+            font-weight: 500;
+            margin: 5px 0;
+        }
+        
+        .item-description {
+            color: #666;
+            font-style: italic;
+            margin: 5px 0;
+        }
+        
+        .item-duration {
+            color: #555;
+            margin: 5px 0;
+        }
+        
+        .item-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 15px;
+        }
+        
+        .quantity-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .quantity-input {
+            width: 60px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .btn-update {
+            background: #ffc107;
+            color: #212529;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .btn-update:hover {
+            background: #e0a800;
+        }
+        
+        .item-price {
+            text-align: right;
+        }
+        
+        .price {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #28a745;
+        }
+        
+        .subtotal {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .btn-remove {
+            background: #dc3545;
+            color: white;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+        
+        .btn-remove:hover {
+            background: #c82333;
+        }
+        
+        .cart-summary {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #bbdefb;
+        }
+        
+        .summary-item.total {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #1976d2;
+            border-bottom: 2px solid #1976d2;
+        }
+        
+        .cart-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .empty-cart {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .empty-cart h2 {
+            margin-bottom: 15px;
+            color: #666;
+        }
+        
+        .empty-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .cart-item {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .item-controls {
+                align-items: stretch;
+            }
+            
+            .cart-actions {
+                flex-direction: column;
+            }
+            
+            .empty-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</body>
+</html>
